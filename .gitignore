@@ -1,0 +1,6 @@
+*.pyc
+__pycache__
+.idea
+pyaccess_control/settings.py
+TODO
+*.py[oc]
