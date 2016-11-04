@@ -21,6 +21,7 @@ class StatisticClass(object):
         self.min_range = min_range
         self.max = max(data)
         self.max_range = max_range
+        self.amplitude = self.max_range - self.min_range
         self.data.sort()
 
     @property
@@ -44,6 +45,10 @@ class StatisticClass(object):
         for other_class in self.above_classes:
             result += other_class.fri
         return round(result, 3)
+
+    @property
+    def Xi(self):
+        return round((Decimal(self.amplitude) / Decimal(2)) + self.min_range, 3)
 
     @property
     def name(self):
