@@ -2,7 +2,7 @@ import math
 
 
 class StatisticClass(object):
-    def __init__(self, min_range, max_range, data, complete_data):
+    def __init__(self, min_range, max_range, data, complete_data, above_classes):
         if not isinstance(min_range, int):
             raise TypeError('"min_range" value need be int.')
         if not isinstance(max_range, int):
@@ -11,6 +11,9 @@ class StatisticClass(object):
             raise TypeError('"data" value need be list.')
         if not isinstance(complete_data, tuple):
             raise TypeError('"complete_data" value need be tuple.')
+        if not isinstance(above_classes, list):
+            raise TypeError('"above_classes" value need be list.')
+        self.above_classes = above_classes
         self.data = data
         self.complete_data = complete_data
         self.min = min(data)
@@ -25,10 +28,10 @@ class StatisticClass(object):
 
     @property
     def Fi(self):
-        count = 0
-        while count < len(self.complete_data) and self.complete_data[count] < self.max_range:
-            count += 1
-        return count
+        result = self.fi
+        for other_class in self.above_classes:
+            result += other_class.fi
+        return result
 
     @property
     def name(self):
@@ -65,7 +68,8 @@ def create_class_from_bytes(bytes):
             this_data.append(data.pop(0))
             if len(data) > 0:
                 actual = data[0]
-        result.append(StatisticClass(min_actual, max_actual, this_data, complete_data))
+        result.append(StatisticClass(min_actual, max_actual, this_data, complete_data, result.copy()))
         min_actual = max_actual
         max_actual += amplitude
+
     return result
