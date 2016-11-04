@@ -10619,6 +10619,24 @@ body.md-skin {
 }
 
 
+.my-header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 40px;
+    color: #fff;
+    background-color: #F00000;
+}
+
+.my-header > .container {
+    padding-top: 7px;
+    padding-right: 15px;
+    padding-left: 15px;
+    text-align: center;
+    text-align-all: center;
+}
+
+
 .my-footer {
     position: absolute;
     bottom: 0;

@@ -1,102 +1,168 @@
 {% extends 'base.html' %}
 {% block corpo %}
-  <div class="container">
-  <form class="form-inline" method="post" action="." enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="form-group">
-      <label for="file_upload">Arquivo:</label>
-      <input name="file_upload" id="file_upload" type="file"/>
-    </div>
-    <div class="form-group">
-      <label for="test">Executar Teste:</label>
-      <input name="test" id="test" type="checkbox"/>
-    </div>
-    <button class="btn btn-primary pull-right">Enviar!</button>
-  </form>
-  <div class="row">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title">
-          <a data-toggle="collapse" href="#collapse_data">
-            Classes com Membros
-          </a>
-        </h4>
+  <div class="container" id="home_container" style="overflow-y: auto">
+    <form class="form-inline" method="post" action="." enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="file_upload">Arquivo:</label>
+        <input name="file_upload" id="file_upload" type="file"/>
       </div>
-      <div id="collapse_data" class="panel-collapse collapse">
-        <div class="panel-body" id="class_with_members" style="overflow-y: auto">
-          {% if result %}
-            {% for data in result %}
-              {{ data }} <br>
-            {% endfor %}
-          {% endif %}
+      <div class="form-group">
+        <label for="test">Executar Teste:</label>
+        <input name="test" id="test" type="checkbox"/>
+      </div>
+      <button class="btn btn-primary pull-right">Enviar!</button>
+    </form>
+    <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse_data" class="collapsed">
+              Classes com Membros
+            </a>
+          </h4>
+        </div>
+        <div id="collapse_data" class="panel-collapse collapse">
+          <div class="panel-body" id="class_with_members" style="overflow-y: auto">
+            {% if result %}
+              {% for data in result %}
+                {{ data }} <br>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse_summary">
+              Tabela Resumo
+            </a>
+          </h4>
+        </div>
+        <div id="collapse_summary" class="panel-collapse collapse">
+          <div class="panel-body" id="summary_table" style="overflow-y: auto">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th>Classe</th>
+                <th>fi</th>
+                <th>Fi</th>
+                <th>fri</th>
+                <th>Fri</th>
+                <th>Xi</th>
+                <th>%</th>
+                <th>Ang</th>
+                <th>Xifi</th>
+                <th>Xi-<span style="text-decoration: overline">X</span></th>
+                <th>(Xi-<span style="text-decoration: overline">X</span>)fi</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% if result %}
+                {% for data in result %}
+                  <tr>
+                    <td>{{ data.name }}</td>
+                    <td>{{ data.fi }}</td>
+                    <td>{{ data.Fi }}</td>
+                    <td>{{ data.fri }}</td>
+                    <td>{{ data.Fri }}</td>
+                    <td>{{ data.Xi }}</td>
+                    <td>{{ data.perc }}</td>
+                    <td>{{ data.ang }}</td>
+                    <td>{{ data.Xifi }}</td>
+                    <td>{{ data.Xi_minus_arithmetic_mean }}</td>
+                    <td>{{ data.Xi_minus_arithmetic_mean_fi }}</td>
+                  </tr>
+                {% endfor %}
+              {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse_chart">
+              Gráficos
+            </a>
+          </h4>
+        </div>
+        <div id="collapse_chart" class="panel-collapse">
+          <div class="panel-body" id="charts" style="overflow-y: auto">
+            <div class="row">
+              <div id="chart_div" class="col-sm-6"></div>
+              <div id="chart_div3" class="col-sm-6"></div>
+            </div>
+            <div class="row">
+              <div id="chart_div2"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title">
-          <a data-toggle="collapse" href="#collapse_data">
-            Tabela Resumo
-          </a>
-        </h4>
-      </div>
-      <div id="collapse_data" class="panel-collapse">
-        <div class="panel-body" id="summary_table" style="overflow-y: auto">
-          <table class="table table-striped">
-            <thead>
-            <tr>
-              <th>Classe</th>
-              <th>fi</th>
-              <th>Fi</th>
-              <th>fri</th>
-              <th>Fri</th>
-              <th>Xi</th>
-              <th>%</th>
-              <th>Ang</th>
-              <th>Xifi</th>
-              <th>Xi-<spam style="text-decoration: overline">X</spam></th>
-              <th>(Xi-<spam style="text-decoration: overline">X</spam>)fi</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% if result %}
-              {% for data in result %}
-                <tr>
-                  <td>{{ data.name }}</td>
-                  <td>{{ data.fi }}</td>
-                  <td>{{ data.Fi }}</td>
-                  <td>{{ data.fri }}</td>
-                  <td>{{ data.Fri }}</td>
-                  <td>{{ data.Xi }}</td>
-                  <td>{{ data.perc }}</td>
-                  <td>{{ data.ang }}</td>
-                  <td>{{ data.Xifi }}</td>
-                  <td>{{ data.Xi_minus_arithmetic_mean }}</td>
-                  <td>{{ data.Xi_minus_arithmetic_mean_fi }}</td>
-                </tr>
-              {% endfor %}
-            {% endif %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
   </div>
 {% endblock %}
 {% block script %}
   <script>
     $(document).ready(function () {
       $('#class_with_members').height(window.innerHeight - 300);
-      $(window).on('resize', function () {
-        $('#class_with_members').height(window.innerHeight - 300);
-      });
       $('#summary_table').height(window.innerHeight - 300);
+      $('#home_container').height(window.innerHeight - 150);
+      $('#charts').height(window.innerHeight - 300);
       $(window).on('resize', function () {
+        $('#home_container').height(window.innerHeight - 150);
         $('#summary_table').height(window.innerHeight - 300);
+        $('#class_with_members').height(window.innerHeight - 300);
+        $('#charts').height(window.innerHeight - 300);
       });
     });
 
+  </script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script
+      type="text/javascript">
+
+    google.charts.load('current', {'packages': ['corechart']});
+
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Intervalo');
+      data.addColumn('number', 'Qt');
+      data.addRows([
+        {% for data in result %}
+          ['{{ data.name }}', {{ data.fi }}],
+        {% endfor %}
+      ]);
+
+      // Set chart options
+      var options = {
+        'title': 'Quantidade de amostras por intervalo',
+        'width': 500,
+        'height': 300
+      };
+      var options2 = {
+        'title': 'Quantidade de amostras por intervalo',
+        'width': 800,
+        'height': 500
+      };
+
+      var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+      var chart2 = new google.visualization.PieChart(document.getElementById('chart_div2'));
+      var chart3 = new google.visualization.LineChart(document.getElementById('chart_div3'));
+      chart.draw(data, options);
+      chart2.draw(data, options2);
+      chart3.draw(data, options);
+    }
   </script>
 {% endblock %}
