@@ -51,6 +51,14 @@ class StatisticClass(object):
         return round((Decimal(self.amplitude) / Decimal(2)) + self.min_range, 3)
 
     @property
+    def perc(self):
+        return self.fri * 100
+
+    @property
+    def ang(self):
+        return round(360 * self.Fri, 2)
+
+    @property
     def name(self):
         return '{} |- {}'.format(self.min_range, self.max_range)
 
