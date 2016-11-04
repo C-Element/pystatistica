@@ -17,7 +17,7 @@
 <div id="wrapper">
   <div id="page-wrapper" class="white-bg">
     <div class="row white-bg">
-      {% include 'navbar.html' %}
+      {% if navbar %}{% include 'navbar.html' %} {% endif %}
       <div class="wrapper wrapper-content">
         {% block corpo %}
         {% endblock %}

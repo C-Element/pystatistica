@@ -1,33 +1,100 @@
 {% extends 'base.html' %}
 {% block corpo %}
   <div class="container">
-    <form class="form-inline" method="post" action="." enctype="multipart/form-data">
-      {% csrf_token %}
-      <div class="form-group">
-        <label for="file_upload">Arquivo:</label>
-        <input name="file_upload" id="file_upload" type="file"/>
+  <form class="form-inline" method="post" action="." enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="file_upload">Arquivo:</label>
+      <input name="file_upload" id="file_upload" type="file"/>
+    </div>
+    <div class="form-group">
+      <label for="test">Executar Teste:</label>
+      <input name="test" id="test" type="checkbox"/>
+    </div>
+    <button class="btn btn-primary pull-right">Enviar!</button>
+  </form>
+  <div class="row">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" href="#collapse_data">
+            Classes com Membros
+          </a>
+        </h4>
       </div>
-      <div class="form-group">
-        <label for="test">Executar Teste:</label>
-        <input name="test" id="test" type="checkbox"/>
+      <div id="collapse_data" class="panel-collapse collapse">
+        <div class="panel-body" id="class_with_members" style="overflow-y: auto">
+          {% if result %}
+            {% for data in result %}
+              {{ data }} <br>
+            {% endfor %}
+          {% endif %}
+        </div>
       </div>
-      <button class="btn btn-primary pull-right">Enviar!</button>
-    </form>
-    <div id="result" style="overflow-y: auto">
-      {% if result %}
-        {% for data in result %}
-          {{ data }} <br>
-        {% endfor %}
-      {% endif %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" href="#collapse_data">
+            Tabela Resumo
+          </a>
+        </h4>
+      </div>
+      <div id="collapse_data" class="panel-collapse">
+        <div class="panel-body" id="summary_table" style="overflow-y: auto">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>Classe</th>
+              <th>fi</th>
+              <th>Fi</th>
+              <th>fri</th>
+              <th>Fri</th>
+              <th>Xi</th>
+              <th>%</th>
+              <th>Ang</th>
+              <th>XiFi</th>
+              <th>Xi-X</th>
+              <th>(Xi-X)fi</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if result %}
+              {% for data in result %}
+                <tr>
+                  <td>{{ data.name }}</td>
+                  <td>{{ data.fi }}</td>
+                  <td>{{ data.Fi }}</td>
+                  <td>fri</td>
+                  <td>Fri</td>
+                  <td>Xi</td>
+                  <td>%</td>
+                  <td>Ang</td>
+                  <td>XiFi</td>
+                  <td>Xi-X</td>
+                  <td>(Xi-X)fi</td>
+                </tr>
+              {% endfor %}
+            {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 {% endblock %}
 {% block script %}
   <script>
     $(document).ready(function () {
-      $('#result').height(window.innerHeight - 210);
+      $('#class_with_members').height(window.innerHeight - 300);
       $(window).on('resize', function () {
-        $('#result').height(window.innerHeight - 210);
+        $('#class_with_members').height(window.innerHeight - 300);
+      });
+      $('#summary_table').height(window.innerHeight - 300);
+      $(window).on('resize', function () {
+        $('#summary_table').height(window.innerHeight - 300);
       });
     });
 

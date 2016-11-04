@@ -10623,13 +10623,13 @@ body.md-skin {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 60px;
+    height: 40px;
     color: #fff;
     background-color: #434a54;
 }
 
 .my-footer > .container {
-    padding-top: 20px;
+    padding-top: 7px;
     padding-right: 15px;
     padding-left: 15px;
     text-align: center;
