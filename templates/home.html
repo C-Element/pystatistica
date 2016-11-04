@@ -56,8 +56,8 @@
               <th>%</th>
               <th>Ang</th>
               <th>Xifi</th>
-              <th>Xi-X</th>
-              <th>(Xi-X)fi</th>
+              <th>Xi-<spam style="text-decoration: overline">X</spam></th>
+              <th>(Xi-<spam style="text-decoration: overline">X</spam>)fi</th>
             </tr>
             </thead>
             <tbody>
@@ -73,8 +73,8 @@
                   <td>{{ data.perc }}</td>
                   <td>{{ data.ang }}</td>
                   <td>{{ data.Xifi }}</td>
-                  <td>Xi-X</td>
-                  <td>(Xi-X)fi</td>
+                  <td>{{ data.Xi_minus_arithmetic_mean }}</td>
+                  <td>{{ data.Xi_minus_arithmetic_mean_fi }}</td>
                 </tr>
               {% endfor %}
             {% endif %}

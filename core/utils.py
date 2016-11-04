@@ -63,6 +63,21 @@ class StatisticClass(object):
         return round(self.Xi * self.fi, 1)
 
     @property
+    def arithmetic_mean(self):
+        result = 0
+        for i in self.complete_data:
+            result += i
+        return round(Decimal(result) / Decimal(len(self.complete_data)), 3)
+
+    @property
+    def Xi_minus_arithmetic_mean(self):
+        return self.Xi - self.arithmetic_mean
+
+    @property
+    def Xi_minus_arithmetic_mean_fi(self):
+        return self.Xi_minus_arithmetic_mean * self.fi
+
+    @property
     def name(self):
         return '{} |- {}'.format(self.min_range, self.max_range)
 
@@ -100,5 +115,4 @@ def create_class_from_bytes(bytes):
         result.append(StatisticClass(min_actual, max_actual, this_data, complete_data, result.copy()))
         min_actual = max_actual
         max_actual += amplitude
-
     return result
