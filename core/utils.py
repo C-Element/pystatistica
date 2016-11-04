@@ -59,6 +59,10 @@ class StatisticClass(object):
         return round(360 * self.Fri, 2)
 
     @property
+    def Xifi(self):
+        return round(self.Xi * self.fi, 1)
+
+    @property
     def name(self):
         return '{} |- {}'.format(self.min_range, self.max_range)
 
