@@ -1,4 +1,5 @@
 import math
+from decimal import Decimal
 
 
 class StatisticClass(object):
@@ -32,6 +33,17 @@ class StatisticClass(object):
         for other_class in self.above_classes:
             result += other_class.fi
         return result
+
+    @property
+    def fri(self):
+        return round(Decimal(len(self.data)) / Decimal(len(self.complete_data)), 3)
+
+    @property
+    def Fri(self):
+        result = self.fri
+        for other_class in self.above_classes:
+            result += other_class.fri
+        return round(result, 3)
 
     @property
     def name(self):
