@@ -71,7 +71,7 @@ class StatisticClass(object):
 
     @property
     def Xi_minus_arithmetic_mean(self):
-        return self.Xi - self.arithmetic_mean
+        return abs(self.Xi - self.arithmetic_mean)
 
     @property
     def Xi_minus_arithmetic_mean_fi(self):
