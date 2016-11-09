@@ -4,10 +4,10 @@ from decimal import Decimal
 
 class StatisticClass(object):
     def __init__(self, min_range, max_range, data, complete_data, above_classes):
-        if not isinstance(min_range, int):
-            raise TypeError('"min_range" value need be int.')
-        if not isinstance(max_range, int):
-            raise TypeError('"max_range" value need be int.')
+        if not isinstance(min_range, Decimal):
+            raise TypeError('"min_range" value need be Decimal.')
+        if not isinstance(max_range, Decimal):
+            raise TypeError('"max_range" value need be Decimal.')
         if not isinstance(data, list):
             raise TypeError('"data" value need be list.')
         if not isinstance(complete_data, tuple):
@@ -21,7 +21,7 @@ class StatisticClass(object):
         self.min_range = min_range
         self.max = max(data)
         self.max_range = max_range
-        self.amplitude = self.max_range - self.min_range
+        self.amplitude = Decimal(self.max_range - self.min_range)
         self.data.sort()
 
     @property
@@ -48,7 +48,7 @@ class StatisticClass(object):
 
     @property
     def Xi(self):
-        return round((Decimal(self.amplitude) / Decimal(2)) + self.min_range, 3)
+        return round((self.amplitude / Decimal(2)) + self.min_range, 3)
 
     @property
     def perc(self):
@@ -67,7 +67,7 @@ class StatisticClass(object):
         result = 0
         for i in self.complete_data:
             result += i
-        return round(Decimal(result) / Decimal(len(self.complete_data)), 3)
+        return round(result / Decimal(len(self.complete_data)), 3)
 
     @property
     def Xi_minus_arithmetic_mean(self):
@@ -96,7 +96,7 @@ def create_class_from_bytes(bytes):
     result = []
     content = (b''.join(bytes)).decode()
     content = content.replace('\r\n', '').replace('\n', '')
-    data = [int(i) for i in content.split(';')]
+    data = [Decimal(i) for i in content.split(';')]
     items_count = len(data)
     sturges = round(1 + 3.3 * math.log(items_count, 10))
     min_data = min(data)

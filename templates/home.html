@@ -4,11 +4,15 @@
     <form class="form-inline" method="post" action="." enctype="multipart/form-data">
       {% csrf_token %}
       <div class="form-group">
+        <label for="graph_title">Título dos Gráficos:</label>
+        <input class="form-control" name="graph_title" id="graph_title" type="text" value="{{ graph_title }}" size="35"/>
+      </div>
+      <div class="form-group">
         <label for="file_upload">Arquivo:</label>
         <input name="file_upload" id="file_upload" type="file"/>
       </div>
       <div class="form-group">
-        <label for="test">Executar Teste:</label>
+        <label for="test">Executar Teste 7000:</label>
         <input name="test" id="test" type="checkbox"/>
       </div>
       <button class="btn btn-primary pull-right">Enviar!</button>
@@ -56,8 +60,8 @@
                 <th>%</th>
                 <th>Ang</th>
                 <th>Xifi</th>
-                <th>Xi-<span style="text-decoration: overline">X</span></th>
-                <th>(Xi-<span style="text-decoration: overline">X</span>)fi</th>
+                <th>|Xi-<span style="text-decoration: overline">X</span>|</th>
+                <th>|Xi-<span style="text-decoration: overline">X</span>|fi</th>
               </tr>
               </thead>
               <tbody>
@@ -96,11 +100,13 @@
         <div id="collapse_chart" class="panel-collapse collapse">
           <div class="panel-body" id="charts" style="overflow-y: auto">
             <div class="row">
-              <div id="chart_div" class="col-sm-6"></div>
-              <div id="chart_div3" class="col-sm-6"></div>
+              <div id="chart_div"></div>
             </div>
             <div class="row">
               <div id="chart_div2"></div>
+            </div>
+            <div class="row">
+              <div id="chart_div3"></div>
             </div>
           </div>
         </div>
@@ -138,23 +144,25 @@
       // Create the data table.
       var data = new google.visualization.DataTable();
       data.addColumn('string', 'Intervalo');
-      data.addColumn('number', 'Qt');
+      data.addColumn('number', 'Qtd.');
       data.addRows([
         {% for data in result %}
-          ['{{ data.name }}', {{ data.fi }}],
+          ['[{{ data.name }}]', {{ data.fi }}],
         {% endfor %}
       ]);
 
       // Set chart options
       var options = {
-        'title': 'Quantidade de amostras por intervalo',
-        'width': 500,
-        'height': 300
+        'title': '{{ graph_title }}',
+        'width': 1500,
+        'height': 250,
+        'fontSize': 10
       };
+
       var options2 = {
-        'title': 'Quantidade de amostras por intervalo',
+        'title': '{{ graph_title }}',
         'width': 800,
-        'height': 500
+        'height': 400
       };
 
       var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
