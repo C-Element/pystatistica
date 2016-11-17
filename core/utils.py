@@ -79,7 +79,10 @@ class StatisticClass(object):
 
     @property
     def name(self):
-        return '{} |- {}'.format(self.min_range, self.max_range)
+        if self.max == self.max_range:
+            return '{} |-| {}'.format(self.min_range, self.max_range)
+        else:
+            return '{} |- {}'.format(self.min_range, self.max_range)
 
     @property
     def data_rep(self):
@@ -95,12 +98,13 @@ class StatisticClass(object):
 def create_class_from_bytes(bytes):
     result = []
     content = (b''.join(bytes)).decode()
-    content = content.replace('\r\n', '').replace('\n', '')
+    content = content.replace('\r\n', '').replace('\n', '').replace(',', ';')
     data = [Decimal(i) for i in content.split(';')]
     items_count = len(data)
     sturges = math.ceil(1 + 3.3 * math.log(items_count, 10))
     min_data = min(data)
-    amplitude = math.ceil((max(data) - min_data) / sturges)
+    max_data = max(data)
+    amplitude = math.ceil((max_data - min_data) / sturges)
     max_actual = min_data + amplitude
     min_actual = min_data
     data.sort()
@@ -108,7 +112,7 @@ def create_class_from_bytes(bytes):
     actual = data[0]
     while len(data) != 0:
         this_data = []
-        while actual < max_actual and len(data) > 0:
+        while (actual < max_actual or (actual == max_actual == max_data)) and len(data) > 0:
             this_data.append(data.pop(0))
             if len(data) > 0:
                 actual = data[0]
