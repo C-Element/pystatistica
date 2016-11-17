@@ -98,7 +98,7 @@ def create_class_from_bytes(bytes):
     content = content.replace('\r\n', '').replace('\n', '')
     data = [Decimal(i) for i in content.split(';')]
     items_count = len(data)
-    sturges = round(1 + 3.3 * math.log(items_count, 10))
+    sturges = math.ceil(1 + 3.3 * math.log(items_count, 10))
     min_data = min(data)
     amplitude = math.ceil((max(data) - min_data) / sturges)
     max_actual = min_data + amplitude
