@@ -17,9 +17,9 @@ class StatisticClass(object):
         self.above_classes = above_classes
         self.data = data
         self.complete_data = complete_data
-        self.min = min(data)
+        self.min = min(data) if len(data) > 0 else min_range
         self.min_range = min_range
-        self.max = max(data)
+        self.max = max(data) if len(data) > 0 else max_range
         self.max_range = max_range
         self.amplitude = Decimal(self.max_range - self.min_range)
         self.data.sort()
