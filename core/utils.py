@@ -63,19 +63,23 @@ class StatisticClass(object):
         return round(self.Xi * self.fi, 1)
 
     @property
-    def arithmetic_mean(self):
+    def total_arithmetic_average(self):
         result = 0
         for i in self.complete_data:
             result += i
         return round(result / Decimal(len(self.complete_data)), 3)
 
     @property
-    def Xi_minus_arithmetic_mean(self):
-        return abs(self.Xi - self.arithmetic_mean)
+    def Xi_minus_total_arithmetic_average(self):
+        return abs(self.Xi - self.total_arithmetic_average)
 
     @property
-    def Xi_minus_arithmetic_mean_fi(self):
-        return self.Xi_minus_arithmetic_mean * self.fi
+    def Xi_minus_arithmetic_average_fi(self):
+        return self.Xi_minus_total_arithmetic_average * self.fi
+
+    @property
+    def average(self):
+        return
 
     @property
     def name(self):
