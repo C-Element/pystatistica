@@ -74,12 +74,36 @@ class StatisticClass(object):
         return abs(self.Xi - self.total_arithmetic_average)
 
     @property
-    def Xi_minus_arithmetic_average_fi(self):
+    def Xi_minus_total_arithmetic_average_fi(self):
         return self.Xi_minus_total_arithmetic_average * self.fi
 
     @property
     def average(self):
-        return
+        result = 0
+        for i in self.data:
+            result += i
+        return round(result / Decimal(len(self.data)), 3)
+
+    @property
+    def median(self):
+        average = self.average
+        result = 0
+        length = len(self.data)
+        for i in self.data:
+            result += ((i - average) ** 2 / length)
+        return round(result / Decimal(len(self.data)), 3)
+    @property
+    def variance(self):
+        average = self.average
+        result = 0
+        length = len(self.data)
+        for i in self.data:
+            result += ((i - average) ** 2 / length)
+        return round(result / Decimal(len(self.data)), 3)
+
+    @property
+    def default_deviation(self):
+        return round(math.sqrt(self.variance), 3)
 
     @property
     def name(self):

@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
 {% block corpo %}
-  <div class="container" id="home_container" style="overflow-y: auto">
+  <div id="home_container" style="padding: 10px;width: 100%;overflow-y: auto">
     <form class="form-inline" method="post" action="." enctype="multipart/form-data">
       {% csrf_token %}
       <div class="form-group">
         <label for="graph_title">Título dos Gráficos:</label>
-        <input class="form-control" name="graph_title" id="graph_title" type="text" value="{{ graph_title }}" size="35"/>
+        <input class="form-control" name="graph_title" id="graph_title" type="text" value="{{ graph_title }}"
+               size="35"/>
       </div>
       <div class="form-group">
         <label for="file_upload">Arquivo:</label>
         <input name="file_upload" id="file_upload" type="file"/>
       </div>
       <div class="form-group">
-        <label for="test">Executar Teste 7000:</label>
+        <label for="test">Executar Teste 500:</label>
         <input name="test" id="test" type="checkbox"/>
       </div>
       <button class="btn btn-primary pull-right">Enviar!</button>
@@ -62,6 +63,11 @@
                 <th>Xifi</th>
                 <th>|Xi-<span style="text-decoration: overline">X</span>|</th>
                 <th>|Xi-<span style="text-decoration: overline">X</span>|fi</th>
+                <th>Média</th>
+                <th>Mediana</th>
+                <th>Moda</th>
+                <th>Variância</th>
+                <th>Desvio Padrão</th>
               </tr>
               </thead>
               <tbody>
@@ -77,8 +83,13 @@
                     <td>{{ data.perc }}</td>
                     <td>{{ data.ang }}</td>
                     <td>{{ data.Xifi }}</td>
-                    <td>{{ data.Xi_minus_arithmetic_mean }}</td>
-                    <td>{{ data.Xi_minus_arithmetic_mean_fi }}</td>
+                    <td>{{ data.Xi_minus_total_arithmetic_average }}</td>
+                    <td>{{ data.Xi_minus_total_arithmetic_average_fi }}</td>
+                    <td>{{ data.average }}</td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ data.variance }}</td>
+                    <td>{{ data.default_deviation }}</td>
                   </tr>
                 {% endfor %}
               {% endif %}
@@ -117,60 +128,60 @@
 {% endblock %}
 {% block script %}
   <script>
-    $(document).ready(function () {
-      $('#class_with_members').height(window.innerHeight - 300);
-      $('#summary_table').height(window.innerHeight - 300);
-      $('#home_container').height(window.innerHeight - 150);
-      $('#charts').height(window.innerHeight - 300);
-      $(window).on('resize', function () {
-        $('#home_container').height(window.innerHeight - 150);
-        $('#summary_table').height(window.innerHeight - 300);
-        $('#class_with_members').height(window.innerHeight - 300);
-        $('#charts').height(window.innerHeight - 300);
+      $(document).ready(function () {
+          $('#class_with_members').height(window.innerHeight - 300);
+          $('#summary_table').height(window.innerHeight - 300);
+          $('#home_container').height(window.innerHeight - 150);
+          $('#charts').height(window.innerHeight - 300);
+          $(window).on('resize', function () {
+              $('#home_container').height(window.innerHeight - 150);
+              $('#summary_table').height(window.innerHeight - 300);
+              $('#class_with_members').height(window.innerHeight - 300);
+              $('#charts').height(window.innerHeight - 300);
+          });
       });
-    });
 
   </script>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script
       type="text/javascript">
 
-    google.charts.load('current', {'packages': ['corechart']});
+      google.charts.load('current', {'packages': ['corechart']});
 
-    google.charts.setOnLoadCallback(drawChart);
+      google.charts.setOnLoadCallback(drawChart);
 
-    function drawChart() {
+      function drawChart() {
 
-      // Create the data table.
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Intervalo');
-      data.addColumn('number', 'Qtd.');
-      data.addRows([
-        {% for data in result %}
-          ['[{{ data.name }}]', {{ data.fi }}],
-        {% endfor %}
-      ]);
+          // Create the data table.
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'Intervalo');
+          data.addColumn('number', 'Qtd.');
+          data.addRows([
+              {% for data in result %}
+                  ['[{{ data.name }}]', {{ data.fi }}],
+              {% endfor %}
+          ]);
 
-      // Set chart options
-      var options = {
-        'title': '{{ graph_title }}',
-        'width': 1500,
-        'height': 250,
-        'fontSize': 10
-      };
+          // Set chart options
+          var options = {
+              'title': '{{ graph_title }}',
+              'width': 1500,
+              'height': 250,
+              'fontSize': 10
+          };
 
-      var options2 = {
-        'title': '{{ graph_title }}',
-        'width': 800,
-        'height': 400
-      };
+          var options2 = {
+              'title': '{{ graph_title }}',
+              'width': 800,
+              'height': 400
+          };
 
-      var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-      var chart2 = new google.visualization.PieChart(document.getElementById('chart_div2'));
-      var chart3 = new google.visualization.LineChart(document.getElementById('chart_div3'));
-      chart.draw(data, options);
-      chart2.draw(data, options2);
-      chart3.draw(data, options);
-    }
+          var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+          var chart2 = new google.visualization.PieChart(document.getElementById('chart_div2'));
+          var chart3 = new google.visualization.LineChart(document.getElementById('chart_div3'));
+          chart.draw(data, options);
+          chart2.draw(data, options2);
+          chart3.draw(data, options);
+      }
   </script>
 {% endblock %}

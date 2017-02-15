@@ -18,7 +18,7 @@ def home(request):
             context['result'] = create_class_from_bytes(request.FILES['file_upload'])
         elif 'test' in request.POST:
             data = []
-            while len(data) < 7000:
+            while len(data) < 500:
                 data.append(round(Decimal(uniform(1, 10000)), 1))
             context['result'] = create_class_from_bytes([b';'.join(str(i).encode() for i in data)])
     return render(request, 'home.html', context=context)
