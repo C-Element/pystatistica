@@ -22,6 +22,7 @@ class StatisticClass(object):
         self.max = max(data) if len(data) > 0 else max_range
         self.max_range = max_range
         self.amplitude = Decimal(self.max_range - self.min_range)
+        self.mode = None
         self.data.sort()
 
     @property
@@ -85,14 +86,6 @@ class StatisticClass(object):
         return round(result / Decimal(len(self.data)), 3)
 
     @property
-    def median(self):
-        average = self.average
-        result = 0
-        length = len(self.data)
-        for i in self.data:
-            result += ((i - average) ** 2 / length)
-        return round(result / Decimal(len(self.data)), 3)
-    @property
     def variance(self):
         average = self.average
         result = 0
@@ -116,6 +109,9 @@ class StatisticClass(object):
     def data_rep(self):
         return '{{{}}}'.format(', '.join(str(i) for i in self.data))
 
+    def get_modal_class(self):
+        return sorted(self.above_classes, key=lambda x: x.fi)[-1]
+
     def __repr__(self):
         return 'class: {} -> {}'.format(self.name, self.data_rep)
 
@@ -123,9 +119,33 @@ class StatisticClass(object):
         return 'class: {} -> {}'.format(self.name, self.data_rep)
 
 
-def create_class_from_bytes(bytes):
+def get_mode(all_classes):
+    greatest_fi = sorted(all_classes, key=lambda x: x.fi)[-1]
+    i = all_classes.index(greatest_fi)
+    i_minus_1 = all_classes[i - 1]
+    i_plus_1 = all_classes[i + 1]
+    li = Decimal(greatest_fi.min)
+    d1 = Decimal(greatest_fi.fi) - Decimal(i_minus_1.fi)
+    d2 = Decimal(greatest_fi.fi) - Decimal(i_plus_1.fi)
+    return li + (d1 / (d1 + d2)) * Decimal(greatest_fi.amplitude)
+
+
+def get_median(all_classes):
+    above_middle = None
+    half = Decimal(len(all_classes[0].complete_data) / 2)
+    for x in all_classes:
+        if x.Fi > half:
+            above_middle = x
+            break
+    i = all_classes.index(above_middle)
+    i_minus_1 = all_classes[i - 1]
+    li = Decimal(above_middle.min)
+    return li + ((half - Decimal(i_minus_1.Fi)) / Decimal(above_middle.fi)) * Decimal(above_middle.amplitude)
+
+
+def create_class_from_bytes(data_bytes):
     result = []
-    content = (b''.join(bytes)).decode()
+    content = (b''.join(data_bytes)).decode()
     content = content.replace('\r\n', '').replace('\n', '').replace(',', ';')
     data = [Decimal(i) for i in content.split(';')]
     items_count = len(data)
@@ -147,4 +167,4 @@ def create_class_from_bytes(bytes):
         result.append(StatisticClass(min_actual, max_actual, this_data, complete_data, result.copy()))
         min_actual = max_actual
         max_actual += amplitude
-    return result
+    return result, get_mode(result), get_median(result)

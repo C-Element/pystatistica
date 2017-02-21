@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 {% block corpo %}
   <div id="home_container" style="padding: 10px;width: 100%;overflow-y: auto">
     <form class="form-inline" method="post" action="." enctype="multipart/form-data">
@@ -43,7 +44,7 @@
         <div class="panel-heading">
           <h4 class="panel-title">
             <a data-toggle="collapse" href="#collapse_summary">
-              Tabela Resumo
+              Tabela Resumo - Moda: {{ mode }} - Mediana: {{ median }}
             </a>
           </h4>
         </div>
@@ -64,8 +65,6 @@
                 <th>|Xi-<span style="text-decoration: overline">X</span>|</th>
                 <th>|Xi-<span style="text-decoration: overline">X</span>|fi</th>
                 <th>Média</th>
-                <th>Mediana</th>
-                <th>Moda</th>
                 <th>Variância</th>
                 <th>Desvio Padrão</th>
               </tr>
@@ -86,8 +85,6 @@
                     <td>{{ data.Xi_minus_total_arithmetic_average }}</td>
                     <td>{{ data.Xi_minus_total_arithmetic_average_fi }}</td>
                     <td>{{ data.average }}</td>
-                    <td></td>
-                    <td></td>
                     <td>{{ data.variance }}</td>
                     <td>{{ data.default_deviation }}</td>
                   </tr>
@@ -111,19 +108,33 @@
         <div id="collapse_chart" class="panel-collapse collapse">
           <div class="panel-body" id="charts" style="overflow-y: auto">
             <div class="row">
-              <div id="chart_div"></div>
+              <div class="col-sm-6">
+                <canvas id="myChart" height="100"></canvas>
+              </div>
             </div>
+            <div class="hr-line-solid"></div>
             <div class="row">
-              <div id="chart_div2"></div>
+              <div class="col-sm-6">
+                <canvas id="myChart2" height="100"></canvas>
+              </div>
             </div>
+            <div class="hr-line-solid"></div>
             <div class="row">
-              <div id="chart_div3"></div>
+              <div class="col-sm-6">
+                <canvas id="myChart3" height="100"></canvas>
+              </div>
             </div>
+            <div class="hr-line-solid"></div>
+            <div class="row">
+              <div class="col-sm-6">
+                <canvas id="myChart4" height="100"></canvas>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 {% endblock %}
 {% block script %}
@@ -132,56 +143,196 @@
           $('#class_with_members').height(window.innerHeight - 300);
           $('#summary_table').height(window.innerHeight - 300);
           $('#home_container').height(window.innerHeight - 150);
-          $('#charts').height(window.innerHeight - 300);
+          //$('#charts').height(window.innerHeight - 300);
           $(window).on('resize', function () {
               $('#home_container').height(window.innerHeight - 150);
               $('#summary_table').height(window.innerHeight - 300);
               $('#class_with_members').height(window.innerHeight - 300);
-              $('#charts').height(window.innerHeight - 300);
+              //  $('#charts').height(window.innerHeight - 300);
           });
       });
 
   </script>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script
-      type="text/javascript">
+  <script type="text/javascript">
+      var ctx = $("#myChart");
+      var ctx2 = $("#myChart2");
+      var ctx3 = $("#myChart3");
+      var ctx4 = $("#myChart4");
 
-      google.charts.load('current', {'packages': ['corechart']});
+      var myChart = new Chart(ctx, {
+          type: 'bar',
+          maintainAspectRatio: true,
+          responsive: false,
+          data: {
+              labels: [
+                  {% for data in result %}
+                      {% if forloop.counter0 > 0 %}, {% endif %}'{{ data.name }}'
+                  {% endfor %}
+              ],
+              datasets: [{
+                  label: 'Frquencia da classe',
+                  data: [
+                      {% for data in result %}
+                          {% if forloop.counter0 > 0 %}, {% endif %}{{ data.fi }}
+                      {% endfor %}
+                  ],
+                  backgroundColor: [
+                      'rgba(0, 130, 255, 0.2)',
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(154, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)',
+                      'rgba(130, 159, 255, 0.2)',
+                      'rgba(0, 160, 0, 0.2)',
+                      'rgba(160, 0, 160, 0.2)'
 
-      google.charts.setOnLoadCallback(drawChart);
+                  ],
+                  borderColor: [
+                      'rgba(0, 130, 255, 1)',
+                      'rgba(255, 99, 132, 1)',
+                      'rgba(154, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)',
+                      'rgba(130, 159, 255, 1)',
+                      'rgba(0, 160, 0, 1)',
+                      'rgba(160, 0, 160, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: true
+                      }
+                  }],
+                  xAxes: [{
+                      categoryPercentage: 1.0,
+                      barPercentage: 1.0
+                  }]
+              }
+          }
+      });
+      var myPieChart = new Chart(ctx2, {
+          type: 'pie',
+          data: {
+              labels: [
+                  {% for data in result %}
+                      {% if forloop.counter0 > 0 %}, {% endif %}'{{ data.name }}'
+                  {% endfor %}
+              ],
+              datasets: [{
+                  label: 'Frquencia da classe',
+                  backgroundColor: [
+                      'rgba(0, 130, 255, 0.2)',
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(154, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)',
+                      'rgba(130, 159, 255, 0.2)',
+                      'rgba(0, 160, 0, 0.2)',
+                      'rgba(160, 0, 160, 0.2)'
 
-      function drawChart() {
+                  ],
+                  borderColor: [
+                      'rgba(0, 130, 255, 1)',
+                      'rgba(255, 99, 132, 1)',
+                      'rgba(154, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)',
+                      'rgba(130, 159, 255, 1)',
+                      'rgba(0, 160, 0, 1)',
+                      'rgba(160, 0, 160, 1)'
+                  ],
+                  data: [
+                      {% for data in result %}
+                          {% if forloop.counter0 > 0 %}, {% endif %}{{ data.fi }}
+                      {% endfor %}
+                  ],
+                  borderWidth: 1
+              }]
+          }
+      });
+      var myChart3 = new Chart(ctx3, {
+          type: 'bar',
+          maintainAspectRatio: true,
+          responsive: false,
+          data: {
+              labels: [
+                  {% for data in result %}
+                      {% if forloop.counter0 > 0 %}, {% endif %}'{{ data.name }}'
+                  {% endfor %}
+              ],
+              datasets: [{
+                  type: 'bar',
+                  label: 'Frquencia da classe',
+                  data: [
+                      {% for data in result %}
+                          {% if forloop.counter0 > 0 %}, {% endif %}{{ data.fi }}
+                      {% endfor %}
+                  ],
+                  backgroundColor: [
+                      'rgba(0, 130, 255, 0.2)',
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(154, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)',
+                      'rgba(130, 159, 255, 0.2)',
+                      'rgba(0, 160, 0, 0.2)',
+                      'rgba(160, 0, 160, 0.2)'
 
-          // Create the data table.
-          var data = new google.visualization.DataTable();
-          data.addColumn('string', 'Intervalo');
-          data.addColumn('number', 'Qtd.');
-          data.addRows([
-              {% for data in result %}
-                  ['[{{ data.name }}]', {{ data.fi }}],
-              {% endfor %}
-          ]);
+                  ],
+                  borderColor: [
+                      'rgba(0, 130, 255, 1)',
+                      'rgba(255, 99, 132, 1)',
+                      'rgba(154, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)',
+                      'rgba(130, 159, 255, 1)',
+                      'rgba(0, 160, 0, 1)',
+                      'rgba(160, 0, 160, 1)'
+                  ],
+                  borderWidth: 1
+              }, {
+                  type: 'line',
+                  label: 'Frquencia da classe',
+                  data: [
+                      {% for data in result %}
+                          {% if forloop.counter0 > 0 %}, {% endif %}{{ data.fi }}
+                      {% endfor %}
+                  ],
+                  backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                  borderColor: 'rgba(0, 0, 0, 1)',
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: true
+                      }
+                  }],
+                  xAxes: [{
+                      categoryPercentage: 1.0,
+                      barPercentage: 1.0
+                  }]
+              }
+          }
+      });
 
-          // Set chart options
-          var options = {
-              'title': '{{ graph_title }}',
-              'width': 1500,
-              'height': 250,
-              'fontSize': 10
-          };
-
-          var options2 = {
-              'title': '{{ graph_title }}',
-              'width': 800,
-              'height': 400
-          };
-
-          var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-          var chart2 = new google.visualization.PieChart(document.getElementById('chart_div2'));
-          var chart3 = new google.visualization.LineChart(document.getElementById('chart_div3'));
-          chart.draw(data, options);
-          chart2.draw(data, options2);
-          chart3.draw(data, options);
-      }
   </script>
 {% endblock %}
