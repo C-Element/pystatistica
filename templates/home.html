@@ -150,25 +150,25 @@
           <div class="panel-body" id="charts" style="overflow-y: auto">
             <div class="row">
               <div class="col-sm-6">
-                <canvas id="myChart" height="100"></canvas>
+                <canvas id="myChart" height="200"></canvas>
               </div>
             </div>
             <div class="hr-line-solid"></div>
             <div class="row">
               <div class="col-sm-6">
-                <canvas id="myChart2" height="100"></canvas>
+                <canvas id="myChart2" height="200"></canvas>
               </div>
             </div>
             <div class="hr-line-solid"></div>
             <div class="row">
               <div class="col-sm-6">
-                <canvas id="myChart3" height="100"></canvas>
+                <canvas id="myChart3" height="200"></canvas>
               </div>
             </div>
             <div class="hr-line-solid"></div>
             <div class="row">
               <div class="col-sm-6">
-                <canvas id="myChart4" height="100"></canvas>
+                <canvas id="myChart4" height="200"></canvas>
               </div>
             </div>
 
@@ -418,8 +418,7 @@
                           backgroundColor: 'rgba(0, 0, 0, 0)',
                           borderColor: 'rgba(0, 255, 0, 1)',
                           borderWidth: 1
-                      },
-                      {
+                      }, {
                           type: 'line',
                           label: 'Média - 1DP',
                           data: [
@@ -428,6 +427,26 @@
                               {% endfor %}],
                           backgroundColor: 'rgba(0, 0, 0, 0)',
                           borderColor: 'rgba(255, 0, 0, 1)',
+                          borderWidth: 1
+                      }, {
+                          type: 'line',
+                          label: 'Moda',
+                          data: [
+                              {% for data in result %}
+                                  {% if forloop.counter0 > 0 %}, {% endif %}{{ result.mode|safe}}
+                              {% endfor %}],
+                          backgroundColor: 'rgba(0, 0, 0, 0)',
+                          borderColor: 'rgba(255, 130, 0, 1)',
+                          borderWidth: 1
+                      }, {
+                          type: 'line',
+                          label: 'Mediana',
+                          data: [
+                              {% for data in result %}
+                                  {% if forloop.counter0 > 0 %}, {% endif %}{{ result.median|safe }}
+                              {% endfor %}],
+                          backgroundColor: 'rgba(0, 0, 0, 0)',
+                          borderColor: 'rgba(0, 130, 255, 1)',
                           borderWidth: 1
                       }
                   ]
@@ -438,10 +457,6 @@
                           ticks: {
                               beginAtZero: false
                           }
-                      }],
-                      xAxes: [{
-                          categoryPercentage: 1.0,
-                          barPercentage: 1.0
                       }]
                   }
               }
