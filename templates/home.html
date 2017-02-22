@@ -388,7 +388,7 @@
                   datasets: [
                       {
                           type: 'line',
-                          label: 'Ponto Médio',
+                          label: 'Frequencia',
                           data: [
                               {% for data in result %}
                                   {% if forloop.counter0 > 0 %}, {% endif %}{{ data.fi|safe }}
@@ -421,10 +421,10 @@
                       },
                       {
                           type: 'line',
-                          label: 'Média + 1DP',
+                          label: 'Média - 1DP',
                           data: [
                               {% for data in result %}
-                                  {% if forloop.counter0 > 0 %}, {% endif %}{{ result.average|safe}} + {{result.standard_deviation|safe }} * 2
+                                  {% if forloop.counter0 > 0 %}, {% endif %}{{ result.average|safe}} - {{result.standard_deviation|safe }}
                               {% endfor %}],
                           backgroundColor: 'rgba(0, 0, 0, 0)',
                           borderColor: 'rgba(255, 0, 0, 1)',
