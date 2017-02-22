@@ -14,12 +14,10 @@ def home(request):
             context['graph_title'] = request.POST['graph_title']
         context['result'] = None
         if fu in request.FILES:
-            context['result'], context['mode'], context['median'] = create_class_from_bytes(
-                request.FILES['file_upload'])
+            context['result'] = create_class_from_bytes(request.FILES['file_upload'])
         elif 'test' in request.POST:
             data = []
-            while len(data) < 25:
+            while len(data) < 50:
                 data.append(round(Decimal(uniform(1, 100)), 1))
-            context['result'], context['mode'], context['median'] = create_class_from_bytes(
-                [b';'.join(str(i).encode() for i in data)])
+            context['result'] = create_class_from_bytes([b';'.join(str(i).encode() for i in data)])
     return render(request, 'home.html', context=context)

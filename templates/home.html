@@ -44,7 +44,10 @@
         <div class="panel-heading">
           <h4 class="panel-title">
             <a data-toggle="collapse" href="#collapse_summary">
-              Tabela Resumo - Moda: {{ mode }} - Mediana: {{ median }}
+              Tabela Resumo - Média: {{ result.average }} -
+              <span style="color: rgb(0,130,255); font-weight: bold">Moda: {{ result.mode }}</span> -
+              <span style="color: rgb(255,130,0); font-weight: bold">Mediana: {{ result.median }}</span> -
+              Variância: {{ result.variance }} - Desvio Padrão: {{ result.standard_deviation }}
             </a>
           </h4>
         </div>
@@ -64,29 +67,67 @@
                 <th>Xifi</th>
                 <th>|Xi-<span style="text-decoration: overline">X</span>|</th>
                 <th>|Xi-<span style="text-decoration: overline">X</span>|fi</th>
-                <th>Média</th>
-                <th>Variância</th>
-                <th>Desvio Padrão</th>
               </tr>
               </thead>
               <tbody>
               {% if result %}
                 {% for data in result %}
                   <tr>
-                    <td>{{ data.name }}</td>
-                    <td>{{ data.fi }}</td>
-                    <td>{{ data.Fi }}</td>
-                    <td>{{ data.fri }}</td>
-                    <td>{{ data.Fri }}</td>
-                    <td>{{ data.Xi }}</td>
-                    <td>{{ data.perc }}</td>
-                    <td>{{ data.ang }}</td>
-                    <td>{{ data.Xifi }}</td>
-                    <td>{{ data.Xi_minus_total_arithmetic_average }}</td>
-                    <td>{{ data.Xi_minus_total_arithmetic_average_fi }}</td>
-                    <td>{{ data.average }}</td>
-                    <td>{{ data.variance }}</td>
-                    <td>{{ data.default_deviation }}</td>
+                    <td>
+                      <span {% if data == result.modal_class %}style="color: rgb(0,130,255); font-weight: bold"
+                            {% elif data == result.median_class %}style="color: rgb(255,130,0); font-weight: bold"
+                            {% endif %}>{{ data.name }}
+                    </td>
+                    <td><span
+                        {% if data == result.median_class %}style="color: rgb(255,130,0); font-weight: bold"
+                        {% elif data == result.modal_class %}style="color: rgb(0,130,255); font-weight: bold"
+                        {% endif %}>{{ data.fi }}</span>
+                    </td>
+                    <td><span
+                        {% if data == result.modal_class %}style="color: rgb(0,130,255); font-weight: bold"
+                        {% elif data == result.median_class %}style="color: rgb(255,130,0); font-weight: bold"
+                        {% endif %}>{{ data.Fi }}</span>
+                    </td>
+                    <td><span
+                        {% if data == result.median_class %}style="color: rgb(255,130,0); font-weight: bold"
+                        {% elif data == result.modal_class %}style="color: rgb(0,130,255); font-weight: bold"
+                        {% endif %}>{{ data.fri }}</span>
+                    </td>
+                    <td><span
+                        {% if data == result.modal_class %}style="color: rgb(0,130,255); font-weight: bold"
+                        {% elif data == result.median_class %}style="color: rgb(255,130,0); font-weight: bold"
+                        {% endif %}>{{ data.Fri }}</span>
+                    </td>
+                    <td><span
+                        {% if data == result.median_class %}style="color: rgb(255,130,0); font-weight: bold"
+                        {% elif data == result.modal_class %}style="color: rgb(0,130,255); font-weight: bold"
+                        {% endif %}>{{ data.Xi }}</span>
+                    </td>
+                    <td><span
+                        {% if data == result.modal_class %}style="color: rgb(0,130,255); font-weight: bold"
+                        {% elif data == result.median_class %}style="color: rgb(255,130,0); font-weight: bold"
+                        {% endif %}>{{ data.perc }}</span>
+                    </td>
+                    <td><span
+                        {% if data == result.median_class %}style="color: rgb(255,130,0); font-weight: bold"
+                        {% elif data == result.modal_class %}style="color: rgb(0,130,255); font-weight: bold"
+                        {% endif %}>{{ data.ang }}</span>
+                    </td>
+                    <td><span
+                        {% if data == result.modal_class %}style="color: rgb(0,130,255); font-weight: bold"
+                        {% elif data == result.median_class %}style="color: rgb(255,130,0); font-weight: bold"
+                        {% endif %}>{{ data.Xifi }}</span>
+                    </td>
+                    <td><span
+                        {% if data == result.median_class %}style="color: rgb(255,130,0); font-weight: bold"
+                        {% elif data == result.modal_class %}style="color: rgb(0,130,255); font-weight: bold"
+                        {% endif %}>{{ data.Xi_minus_total_arithmetic_average }}</span>
+                    </td>
+                    <td><span
+                        {% if data == result.modal_class %}style="color: rgb(0,130,255); font-weight: bold"
+                        {% elif data == result.median_class %}style="color: rgb(255,130,0); font-weight: bold"
+                        {% endif %}>{{ data.Xi_minus_total_arithmetic_average_fi }}</span>
+                    </td>
                   </tr>
                 {% endfor %}
               {% endif %}
@@ -333,6 +374,79 @@
               }
           }
       });
+
+      var myChart4 = new Chart(ctx4, {
+              type: 'line',
+              maintainAspectRatio: true,
+              responsive: false,
+              data: {
+                  labels: [
+                      {% for data in result %}
+                          {% if forloop.counter0 > 0 %}, {% endif %}'{{ data.name }}'
+                      {% endfor %}
+                  ],
+                  datasets: [
+                      {
+                          type: 'line',
+                          label: 'Ponto Médio',
+                          data: [
+                              {% for data in result %}
+                                  {% if forloop.counter0 > 0 %}, {% endif %}{{ data.fi|safe }}
+                              {% endfor %}],
+                          backgroundColor: 'rgba(0, 0, 0, 0)',
+                          borderColor: 'rgba(0, 0, 0, 1)',
+                          borderWidth: 1
+                      },
+                      {
+                          type: 'line',
+                          label: 'Média',
+                          data: [
+                              {% for data in result %}
+                                  {% if forloop.counter0 > 0 %}, {% endif %}{{ result.average|safe }}
+                              {% endfor %}],
+                          backgroundColor: 'rgba(0, 0, 0, 0)',
+                          borderColor: 'rgba(0, 0, 255, 1)',
+                          borderWidth: 1
+                      },
+                      {
+                          type: 'line',
+                          label: 'Média + 1DP',
+                          data: [
+                              {% for data in result %}
+                                  {% if forloop.counter0 > 0 %}, {% endif %}{{ result.average|safe}} + {{result.standard_deviation|safe }}
+                              {% endfor %}],
+                          backgroundColor: 'rgba(0, 0, 0, 0)',
+                          borderColor: 'rgba(0, 255, 0, 1)',
+                          borderWidth: 1
+                      },
+                      {
+                          type: 'line',
+                          label: 'Média + 1DP',
+                          data: [
+                              {% for data in result %}
+                                  {% if forloop.counter0 > 0 %}, {% endif %}{{ result.average|safe}} + {{result.standard_deviation|safe }} * 2
+                              {% endfor %}],
+                          backgroundColor: 'rgba(0, 0, 0, 0)',
+                          borderColor: 'rgba(255, 0, 0, 1)',
+                          borderWidth: 1
+                      }
+                  ]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: false
+                          }
+                      }],
+                      xAxes: [{
+                          categoryPercentage: 1.0,
+                          barPercentage: 1.0
+                      }]
+                  }
+              }
+          })
+          ;
 
   </script>
 {% endblock %}

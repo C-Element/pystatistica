@@ -1,5 +1,14 @@
 import math
 from decimal import Decimal
+from typing import List
+
+test_data = '17,19,29,44,27,19,34,28,14,35,52,40,59,30,40,15,43,52,43,45,15,32,15,33,38,29,33,18,17,29,27,20,21,18,' \
+            '48,22,15,24,38,28,23,22,23,17,29,30,16,16,22,15,21,15,21,30,34,17,19,17,34,15,16,18,18,29,34,22,20,19,' \
+            '16,17,20,15,17,19,38,32,29,18,14,25,24,21,16,16,24,21,46,20,45,20,42,68,16,26,20,55,55,42,20,47,38,53,' \
+            '17,51,22,21,16,21,34,20,18,18,20,22,17,37,34,15,28,15,28,16,19,25,15,17,16,15,16,15,19,23,20,16,17,18,' \
+            '17,16,16,21,19,15,31,31,17,32,18,54,16,18,31,36,21,18,30,15,15,15,21,16,18,30,33,15,17,30,20,33,18,23,' \
+            '38,25,46,18,23,17,60,18,20,24,47,48,39,17,15,18,18,23,22,25,20,23,18,16,16,15,19,33,15,18,16,18,21,16,' \
+            '15,15,19,37,43,16,18,16,16,16,16'
 
 
 class StatisticClass(object):
@@ -23,11 +32,12 @@ class StatisticClass(object):
         self.max_range = max_range
         self.amplitude = Decimal(self.max_range - self.min_range)
         self.mode = None
+        self.average = Decimal(0)
         self.data.sort()
 
     @property
     def fi(self):
-        return len(self.data)
+        return Decimal(len(self.data))
 
     @property
     def Fi(self):
@@ -38,7 +48,7 @@ class StatisticClass(object):
 
     @property
     def fri(self):
-        return round(Decimal(len(self.data)) / Decimal(len(self.complete_data)), 3)
+        return round(self.fi / Decimal(len(self.complete_data)), 3)
 
     @property
     def Fri(self):
@@ -53,7 +63,7 @@ class StatisticClass(object):
 
     @property
     def perc(self):
-        return self.fri * 100
+        return self.fri * Decimal(100)
 
     @property
     def ang(self):
@@ -64,39 +74,12 @@ class StatisticClass(object):
         return round(self.Xi * self.fi, 1)
 
     @property
-    def total_arithmetic_average(self):
-        result = 0
-        for i in self.complete_data:
-            result += i
-        return round(result / Decimal(len(self.complete_data)), 3)
-
-    @property
     def Xi_minus_total_arithmetic_average(self):
-        return abs(self.Xi - self.total_arithmetic_average)
+        return round(abs(self.Xi - self.average), 3)
 
     @property
     def Xi_minus_total_arithmetic_average_fi(self):
         return self.Xi_minus_total_arithmetic_average * self.fi
-
-    @property
-    def average(self):
-        result = 0
-        for i in self.data:
-            result += i
-        return round(result / Decimal(len(self.data)), 3)
-
-    @property
-    def variance(self):
-        average = self.average
-        result = 0
-        length = len(self.data)
-        for i in self.data:
-            result += ((i - average) ** 2 / length)
-        return round(result / Decimal(len(self.data)), 3)
-
-    @property
-    def default_deviation(self):
-        return round(math.sqrt(self.variance), 3)
 
     @property
     def name(self):
@@ -109,8 +92,8 @@ class StatisticClass(object):
     def data_rep(self):
         return '{{{}}}'.format(', '.join(str(i) for i in self.data))
 
-    def get_modal_class(self):
-        return sorted(self.above_classes, key=lambda x: x.fi)[-1]
+    def __eq__(self, other):
+        return self.__str__() == other.__str__()
 
     def __repr__(self):
         return 'class: {} -> {}'.format(self.name, self.data_rep)
@@ -119,32 +102,98 @@ class StatisticClass(object):
         return 'class: {} -> {}'.format(self.name, self.data_rep)
 
 
-def get_mode(all_classes):
-    greatest_fi = sorted(all_classes, key=lambda x: x.fi)[-1]
-    i = all_classes.index(greatest_fi)
-    i_minus_1 = all_classes[i - 1]
-    i_plus_1 = all_classes[i + 1]
-    li = Decimal(greatest_fi.min)
-    d1 = Decimal(greatest_fi.fi) - Decimal(i_minus_1.fi)
-    d2 = Decimal(greatest_fi.fi) - Decimal(i_plus_1.fi)
-    return li + (d1 / (d1 + d2)) * Decimal(greatest_fi.amplitude)
+class GroupedData(object):
+    def __init__(self):
+        self._data: List[StatisticClass] = []
 
+    def append(self, value):
+        self._data.append(value)
 
-def get_median(all_classes):
-    above_middle = None
-    half = Decimal(len(all_classes[0].complete_data) / 2)
-    for x in all_classes:
-        if x.Fi > half:
-            above_middle = x
-            break
-    i = all_classes.index(above_middle)
-    i_minus_1 = all_classes[i - 1]
-    li = Decimal(above_middle.min)
-    return li + ((half - Decimal(i_minus_1.Fi)) / Decimal(above_middle.fi)) * Decimal(above_middle.amplitude)
+    def copy(self):
+        return self._data.copy()
+
+    def index(self, value):
+        return self._data.index(value)
+
+    def average(self):
+        sum_xifi = 0
+        sum_fi = 0
+        for c in self._data:
+            sum_xifi += c.Xifi
+            sum_fi += c.fi
+        return round(sum_xifi / sum_fi, 3)
+
+    def median_class(self):
+        above_middle = None
+        if len(self._data) == 0:
+            return None
+        half = Decimal(len(self._data[0].complete_data) / 2)
+        for x in self._data:
+            if x.Fi > half:
+                above_middle = x
+                break
+        return above_middle
+
+    def median(self):
+        above_middle = self.median_class()
+        if above_middle is None:
+            return None
+        half = Decimal(len(self._data[0].complete_data) / 2)
+        i = self._data.index(above_middle)
+        i_minus_1 = self._data[i - 1]
+        li = Decimal(above_middle.min)
+        return round(li + ((half - i_minus_1.Fi) / above_middle.fi) * above_middle.amplitude, 3)
+
+    def modal_class(self):
+        mc = None
+        avrg = self.average()
+        for c in self._data:
+            if c.min_range <= avrg < c.max_range:
+                mc = c
+                break
+        return mc
+
+    def mode(self):
+        mc = self.modal_class()
+        if mc is None:
+            return mc
+        i = self._data.index(mc)
+        i_minus_1 = self._data[i - 1]
+        i_plus_1 = self._data[i + 1]
+        li = Decimal(mc.min)
+        d1 = Decimal(mc.fi) - Decimal(i_minus_1.fi)
+        d2 = Decimal(mc.fi) - Decimal(i_plus_1.fi)
+        return round(li + (d1 / (d1 + d2)) * Decimal(mc.amplitude), 3)
+
+    def update_data(self):
+        avrg = self.average()
+        for c in self._data:
+            c.average = avrg
+
+    def variance(self):
+        if len(self._data) == 0:
+            return None
+        result = 0
+        avrg = self.average()
+        for i in self._data[0].complete_data:
+            result += (i - avrg) ** 2
+        return round(result / Decimal(len(self._data[0].complete_data) - 1), 3)
+
+    def standard_deviation(self):
+        return round(math.sqrt(self.variance()), 3)
+
+    def __getitem__(self, item):
+        return self._data[item]
+
+    def __setitem__(self, key, value):
+        self._data[key] = value
+
+    def __iter__(self):
+        return self._data.__iter__()
 
 
 def create_class_from_bytes(data_bytes):
-    result = []
+    result = GroupedData()
     content = (b''.join(data_bytes)).decode()
     content = content.replace('\r\n', '').replace('\n', '').replace(',', ';')
     data = [Decimal(i) for i in content.split(';')]
@@ -167,4 +216,5 @@ def create_class_from_bytes(data_bytes):
         result.append(StatisticClass(min_actual, max_actual, this_data, complete_data, result.copy()))
         min_actual = max_actual
         max_actual += amplitude
-    return result, get_mode(result), get_median(result)
+    result.update_data()
+    return result
